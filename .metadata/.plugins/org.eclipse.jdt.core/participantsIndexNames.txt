@@ -1,7 +1,0 @@
-INDEX VERSION 1.134
-C:\Users\tj\Desktop\test\jsp\workspace\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\2607707209.index
-\01_servlet\src\main\java
-C:\Users\tj\Desktop\test\jsp\workspace\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\2599709816.index
-\01_servlet\src\main\java
-C:\Users\tj\Desktop\test\jsp\workspace\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\57454101.index
-\01.servlet01\src\main\java
