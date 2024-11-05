@@ -8,14 +8,13 @@ import vo.Post;
 public class PostServiceImpl implements PostService {
 
 	@Override
-	public Post findBy(int pno) {
+	public Post selectOne(Long pno) {
 		// TODO Auto-generated method stub
-		return null;
+		return PostDao.selectOne(pno);
 	}
 
 	@Override
 	public List<Post> selectList() {
-		
 		return PostDao.list();
 	}
 

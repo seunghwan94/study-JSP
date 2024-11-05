@@ -6,7 +6,7 @@ import vo.Post;
 
 public interface PostService {
 	// select1 => 단일 조회
-	Post findBy(int pno);
+	Post selectOne(Long pno);
 	
 	// selectlist => 리스트
 	List<Post> selectList();
@@ -19,5 +19,7 @@ public interface PostService {
 	
 	// 게시글 삭제
 	boolean removePost(int pno);
+
+	
 	
 }
