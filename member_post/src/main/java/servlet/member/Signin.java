@@ -32,20 +32,45 @@ public class Signin extends HttpServlet{
 		String pw = req.getParameter("pw");
 		String rememberId = req.getParameter("remember-id");
 		
+		
+		
+		
 		if(service.login(id,pw)) {
 			// 세션 생성
 			HttpSession session =  req.getSession();
 			session.setAttribute("member", service.findBy(id));
 			
-			Cookie cookie = new Cookie("id", id);
-			Cookie rememberIdCookie = new Cookie("rememberId", rememberId);
+//			// 쿠키 과제 - 쿠키에 아이디 기억 여부 처리
+//			Cookie cookie = new Cookie("id", id);
+//			Cookie rememberIdCookie = new Cookie("rememberId", rememberId);
+//			
+//			if(rememberId == null) {
+//				rememberIdCookie.setMaxAge(0);
+//			}
+//			
+//			resp.addCookie(cookie);
+//			resp.addCookie(rememberIdCookie);
+
 			
-			if(rememberId == null) {
-				rememberIdCookie.setMaxAge(0);
+			// 쿠키 쌤 코드
+			if(rememberId != null) {
+				Cookie cookie = new Cookie("remember-id",id);
+				cookie.setMaxAge(60 * 60 * 24 * 7);
+				resp.addCookie(cookie);
+			} else {
+				// 아이디 기억 안할때 처리할 일
+				Cookie[] cookies = req.getCookies();
+				for (Cookie c : cookies) {
+					if (c.getName().equals("remember-id")){
+						c.setMaxAge(0);
+						resp.addCookie(c);
+						break;
+					}
+				}
+				
 			}
 			
-			resp.addCookie(cookie);
-			resp.addCookie(rememberIdCookie);
+			
 			
 			// 로그인 성공
 			resp.sendRedirect(req.getContextPath()+"/index");

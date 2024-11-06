@@ -14,66 +14,46 @@ import vo.Post;
 
 public class PostDao {
 	
-	// 목록 가져오기
-	public static List<Post> list() {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		try {
-			// 1. connection 객체 취득
-			conn = DBConn.getConnection();
-			// 2. 문장생성 (파라미터 지정)
-			String sql = "select * from tbl_post";
-			pstmt = conn.prepareStatement(sql);
-	
-			Post post = null;
-			List<Post> arrList = new ArrayList<>();
+	// 추가
+	public int insert(Post post) {
+		String sql = "insert into tbl_post (title,content,writer) values (?,?,?) ";
+		
+		try(Connection conn = DBConn.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			int idx = 1;
 			
-			ResultSet rs = pstmt.executeQuery();
-			while(rs.next()) {
-				post = Post.builder()
-						.pno(rs.getLong("pno"))
-						.title(rs.getString("title"))
-						.writer(rs.getString("writer"))
-						.content(rs.getString("content"))
-						.build();
-				arrList.add(post);
-			}
-					
-			for (Post p : arrList) {
-				System.out.println(p);
-			}
+			pstmt.setString(idx++,post.getTitle());
+			pstmt.setString(idx++,post.getContent());
+			pstmt.setString(idx++,post.getWriter());
 			
-			return arrList;
-			
-		} catch (SQLException | ClassNotFoundException e) {
-			// TODO Auto-generated catch block
+			return pstmt.executeUpdate();
+
+		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
-		} finally {
-			
-			try {
-				pstmt.close();
-				conn.close();
-			} catch (SQLException ignore) {}
-			
 		}
 		
-		return null;
+		return 0;
 	}
 	
 	// 하나 가져오기
-	public static Post selectOne(Long pno) {
+	public Post selectOne(Long pno) {
 		Post post = null;
-		String sql = "select * from tbl_post where pno = ?";
+		String sql = "select pno, title, writer, content, view_count, create_date, update_date from tbl_post where pno = ?";
 		
 		try(Connection conn = DBConn.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			pstmt.setLong(1,pno);
 			ResultSet rs = pstmt.executeQuery();
+			
 			if(rs.next()) {
+				int idx = 1;
+				
 				post = Post.builder()
-						.pno(rs.getLong("pno"))
-						.title(rs.getString("title"))
-						.writer(rs.getString("writer"))
-						.content(rs.getString("content"))
+						.pno(rs.getLong(idx++))
+						.title(rs.getString(idx++))
+						.writer(rs.getString(idx++))
+						.content(rs.getString(idx++))
+						.viewCount(rs.getLong(idx++))
+						.createDate(rs.getDate(idx++))
+						.updateDate(rs.getDate(idx++))
 						.build();
 			}
 			
@@ -83,15 +63,49 @@ public class PostDao {
 		
 		return post;
 	}
+		
+		
+	// 목록 가져오기
+	public List<Post> selectList() {
+		List<Post> posts = new ArrayList<>();
+		
+		String sql = "select pno, title, writer, view_count, create_date from tbl_post";
+		try(Connection conn = DBConn.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+
+			
+			ResultSet rs = pstmt.executeQuery();
+			int idx = 1;
+			while(rs.next()) {
+				Post post = Post.builder()
+						.pno(rs.getLong(idx++))
+						.title(rs.getString(idx++))
+						.writer(rs.getString(idx++))
+						.viewCount(rs.getLong(idx++))
+						.createDate(rs.getDate(idx++))
+						.build();
+				posts.add(post);
+			}
+			return posts;
+			
+		} catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return posts;
+	}
 	
-	// 추가
-	public static int addPost(String title, String content, String writer) {
-		String sql = "insert tbl_post into (title,content,writer) values (?,?,?) ";
+	
+	// 수정
+	public int update(Post post) {
+		String sql = "update tbl_post set title = ? , content = ?, update_date = now()  where pno = ?";
 		
 		try(Connection conn = DBConn.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.setString(1,title);
-			pstmt.setString(2,content);
-			pstmt.setString(3,writer);
+			int idx = 1;
+			
+			pstmt.setString(idx++,post.getTitle());
+			pstmt.setString(idx++,post.getContent());
+			pstmt.setLong(idx++,post.getPno());
 			
 			return pstmt.executeUpdate();
 
@@ -100,12 +114,12 @@ public class PostDao {
 		}
 		
 		return 0;
-	}
-	
+	}	
+
 	
 	// 삭제
-	public static int removePost(Long pno) {
-		String sql = "delete tbl_post where pno = ?";
+	public int delete(Long pno) {
+		String sql = "delete from tbl_post where pno = ?";
 		
 		try(Connection conn = DBConn.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			pstmt.setLong(1,pno);
@@ -118,29 +132,31 @@ public class PostDao {
 		
 		return 0;
 	}
-	
-	// 삭제
-	public static int modifyPost(Long pno, String title, String content) {
-		String sql = "update tbl_post set title = ? , content = ?  where pno = ?";
-		
-		try(Connection conn = DBConn.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.setString(1,title);
-			pstmt.setString(2,content);
-			pstmt.setLong(3,pno);
-			
-			return pstmt.executeUpdate();
 
-		} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return 0;
-	}	
 	public static void main(String[] args) {
 		PostDao pao = new PostDao();
-//		int rlt = dao.insert(Member.builder().id("aa").pw("123").name("뭔데").build());
-//		System.out.println(rlt);
 
+		Post post = Post.builder().title("test").writer("test").content("wwww").build();
+		
+		int rlt = pao.insert(post);
+		System.out.println(rlt);
+		
+		post = pao.selectOne((long) 6);
+		System.out.println(post);
+		
+		int p4 = pao.update(post);
+		System.out.println(p4);
+		
+		int p3 = pao.delete((long) post.getPno());
+		System.out.println(p3);
+		
+		
+		List<Post> arr = pao.selectList();
+		for (Post p : arr) {
+			System.out.println(p);
+		}
+		
+//		pao.selectList().forEach(System.out::print);
 	}
 
 

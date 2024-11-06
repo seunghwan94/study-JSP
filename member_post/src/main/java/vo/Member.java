@@ -31,6 +31,10 @@ public class Member {
 		return new M();
 	}
 
+	public int getNum() {
+		return 20;
+	}
+	
 //	인스턴스 클래스 라서 static class를 해야 빌더 패턴을 사용할 수 있다
 	public static class M {
 		String id;

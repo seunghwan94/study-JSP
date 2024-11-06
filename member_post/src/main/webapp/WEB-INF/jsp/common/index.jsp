@@ -1,6 +1,6 @@
-<%@page import="vo.Member"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,29 +26,20 @@
         </div>
         <div class="col-md-3">
           <div class="p-3 d-grid gap-2">
-          <% 
-          	Object o = session.getAttribute("member");
-          	if(o!= null){
-          %>
-            <p><a href="mypage.html" class="text-decoration-none text-dark"><strong>홍길동</strong>님 환영합니다.</a></p>
-            <div class="small clearfix">
-              <a href="logout" class="small float-start text-decoration-none">로그아웃</a>
-              <a href="mypage.html" class="small float-end text-decoration-none">마이페이지</a>
-            </div>
-            
-          <%
-          	} else {
-          		Member m = (Member) o;
-          %>
-			<a href="signin" class="btn btn-secondary btn-block">로그인</a>
-            <div class="small clearfix">
-              <a href="signup" class="small float-start text-decoration-none">회원가입</a>
-              <a href="signup" class="small float-end text-decoration-none">아이디/비밀번호 찾기</a>
-            </div>
-          <%
-          	
-          	} 
-          %> 
+          	<c:if test="${ not empty member }">    
+	            <p><a href="mypage.html" class="text-decoration-none text-dark"><strong>${member.name}</strong>님 환영합니다.</a></p>
+	            <div class="small clearfix">
+	              <a href="logout" class="small float-start text-decoration-none">로그아웃</a>
+	              <a href="mypage.html" class="small float-end text-decoration-none">마이페이지</a>
+	            </div>
+	  		</c:if>      
+	        <c:if test="${ empty member }">
+				<a href="signin" class="btn btn-secondary btn-block">로그인</a>
+	            <div class="small clearfix">
+	              <a href="signup" class="small float-start text-decoration-none">회원가입</a>
+	              <a href="signup" class="small float-end text-decoration-none">아이디/비밀번호 찾기</a>
+	            </div>
+	        </c:if>
           </div>
         </div>
       </div>
