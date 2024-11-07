@@ -6,32 +6,26 @@ import dao.PostDao;
 import vo.Post;
 
 public class PostServiceImpl implements PostService {
-
-	@Override
-	public Post selectOne(Long pno) {
-		// TODO Auto-generated method stub
-		return PostDao.selectOne(pno);
-	}
-
-	@Override
-	public List<Post> selectList() {
-		return PostDao.list();
-	}
-
-	@Override
-	public boolean modifyPost(int pno, String title, String content) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean addPost(String title, String content) {
-		return false;
-	}
-
-	@Override
-	public boolean removePost(int pno) {
-		return false;
-	}
+	private PostDao dao = new PostDao();
 	
+	@Override
+	public int write(Post post) {
+		return dao.insert(post);
+	}
+	@Override
+	public int modify(Post post) {
+		return dao.update(post);
+	}
+	@Override
+	public int remove(Long pno) {
+		return dao.delete(pno);
+	}
+	@Override
+	public Post findBy(Long pno) {
+		return dao.selectOne(pno);
+	}
+	@Override
+	public List<Post> list() {
+		return dao.selectList();
+	}
 }

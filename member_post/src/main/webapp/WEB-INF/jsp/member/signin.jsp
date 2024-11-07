@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,12 +11,12 @@
     .hide {display: none;}
   </style>
 </head>
-<body>
+<body class="bg-dark">
   <div class="wrap">
     <jsp:include page="../common/header.jsp"/>
 
     <main class="container mb-5">
-        <h1 class="text-center mt-4 fw-bold">Sign in</h1>
+        <h1 class="text-center mt-4 fw-bold text-white">Sign in</h1>
         <form name="form" method="post" class="mx-auto col-8 col-sm-8 col-md-6 col-lg-5 col-xl-4 col-xxl-3 card p-3 mt-4">
           <input type="text" class="form-control my-3" id="id" placeholder="아이디" name="id" value="${cookie['remember-id'].value}">
           <input type="password" class="form-control my-3" id="pw" placeholder="비밀번호" name="pw">

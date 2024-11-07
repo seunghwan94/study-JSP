@@ -69,20 +69,21 @@ public class PostDao {
 	public List<Post> selectList() {
 		List<Post> posts = new ArrayList<>();
 		
-		String sql = "select pno, title, writer, view_count, create_date from tbl_post";
+		String sql = "select pno, title, writer, view_count, create_date, updateDate from tbl_post order by pno desc";
 		try(Connection conn = DBConn.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
 
 			
 			ResultSet rs = pstmt.executeQuery();
-			int idx = 1;
 			while(rs.next()) {
+				int idx = 1;
 				Post post = Post.builder()
 						.pno(rs.getLong(idx++))
 						.title(rs.getString(idx++))
 						.writer(rs.getString(idx++))
 						.viewCount(rs.getLong(idx++))
 						.createDate(rs.getDate(idx++))
+						.updateDate(rs.getDate(idx++))
 						.build();
 				posts.add(post);
 			}
@@ -141,7 +142,7 @@ public class PostDao {
 		int rlt = pao.insert(post);
 		System.out.println(rlt);
 		
-		post = pao.selectOne((long) 6);
+		post = pao.selectOne((long) 12);
 		System.out.println(post);
 		
 		int p4 = pao.update(post);
@@ -157,6 +158,11 @@ public class PostDao {
 		}
 		
 //		pao.selectList().forEach(System.out::print);
+	}
+
+	public static int update() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 

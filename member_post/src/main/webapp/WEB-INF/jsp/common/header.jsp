@@ -7,7 +7,7 @@
     <h1 class="float-end fw-bold p-3 text-center">Mago UI Practice</h1>
   </div>
 </header>
- <nav class="navbar navbar-expand-sm bg-dark">
+ <nav class="navbar navbar-expand-sm bg-dark border-secondary border-bottom">
    <ul class="navbar-nav container justify-content-start">
      <li class="nav-item"><a class="nav-link text-white mx-3" href="index.html">Home</a></li>
      <li class="nav-item"><a class="nav-link text-white mx-3" href="mypage.html">MyPage</a></li>

@@ -5,21 +5,18 @@ import java.util.List;
 import vo.Post;
 
 public interface PostService {
-	// select1 => 단일 조회
-	Post selectOne(Long pno);
+	// 메서드의 시그니처를 만들어야된다.
+	// 현실적인 이름을 사용해야된다.
+	// 메서드 정의를 해야된다. 
 	
-	// selectlist => 리스트
-	List<Post> selectList();
+	int write(Post post);
 	
-	// 게시글 수정
-	boolean modifyPost(int pno, String title, String content);
+	int modify(Post post);
 	
-	// 게시글 생성
-	boolean addPost(String title, String content);
+	int remove(Long pno);
 	
-	// 게시글 삭제
-	boolean removePost(int pno);
-
+	Post findBy(Long pno);
 	
+	List<Post> list();
 	
 }
