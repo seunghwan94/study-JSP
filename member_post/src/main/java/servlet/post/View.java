@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import service.PostService;
 import service.PostServiceImpl;
+import utils.Commons;
 
 @WebServlet("/post/view")
 public class View extends HttpServlet{
@@ -20,9 +21,14 @@ public class View extends HttpServlet{
 		// 전체목록 보기
 		String pnoString = req.getParameter("pno");
 		
-		Long bno = pnoString == null ? 1L : Long.valueOf(pnoString);
+		if(pnoString == null) {
+			Commons.printMsg("비정상적인 접근입니다.", pnoString, resp);
+			return;
+		}
 		
-		req.setAttribute("post", service.findBy(bno));
+		Long pno =  Long.valueOf(pnoString);
+		
+		req.setAttribute("post", service.view(pno));
 		req.getRequestDispatcher("/WEB-INF/jsp/post/view.jsp").forward(req, resp);
 	}
 

@@ -16,10 +16,11 @@
     <jsp:include page="../common/header.jsp"/>
     <main class="container mb-5">
        
-
-<h2 class="my-4 text-white">게시판</h2>
-	
-      <table class="table table-dark table-striped table-hover my-5 text-center" style="table-layout: fixed">
+	  <div class= "my-4 clearfix">
+		<h2 class="text-white float-start">게시판</h2>
+	  	<a href="write" class="btn btn-secondary float-end">글쓰기</a>
+	  </div>
+      <table class="table table-dark table-striped table-hover my-3 text-center" style="table-layout: fixed">
         <thead>
           <tr class="table-secondary">
             <th style="width: 10%;">번호</th>

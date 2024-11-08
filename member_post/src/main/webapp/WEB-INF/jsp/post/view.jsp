@@ -15,6 +15,9 @@
   <div class="wrap">
     <jsp:include page="../common/header.jsp"/>
     <main class="container mb-5">
+  	  <div class= "my-4 clearfix">
+		<h2 class="text-white float-start">상세보기</h2>
+	  </div>
       <div class="my-3 col-md-9">
         <label for="title" class="form-label text-white mt-3">
           <i class="fa-solid fa-heading" style="color: #48587f;"></i>
@@ -26,9 +29,7 @@
           <i class="fa-solid fa-pen-fancy"  style="color: #48587f;"></i>
           <b>Content</b>
         </label>
-        <textarea class="form-control" rows="20" id="content" name="content" disabled>
-        	${post.content}
-        </textarea>
+        <textarea class="form-control" rows="20" id="content" name="content" disabled>${post.content}</textarea>
 
         
         <label for="create-date" class="form-label text-white mt-3 me-4">
@@ -50,11 +51,13 @@
           <b>Writer</b>
         </label>
         <input type="text" class="form-control" id="writer" placeholder="writer" name="writer" value="${post.writer}" disabled>
-        
-        <hr>
-        
-        <div class="text-center">
-          <a href="list" class="btn btn-primary">목록</a>
+
+        <div class="text-center my-5">
+        	<c:if test="${post.writer == member.id}">
+	        	<a href="modify?pno=${post.pno}" class="btn btn-secondary">수정</a>
+	        	<a href="remove?pno=${post.pno}" class="btn btn-outline-secondary" onclick="return confirm('삭제하시겠습니까?');">삭제</a>
+        	</c:if>
+          	<a href="list" class="btn btn-secondary">목록</a>
         </div>
 
       </div>

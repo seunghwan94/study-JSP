@@ -69,7 +69,7 @@ public class PostDao {
 	public List<Post> selectList() {
 		List<Post> posts = new ArrayList<>();
 		
-		String sql = "select pno, title, writer, view_count, create_date, updateDate from tbl_post order by pno desc";
+		String sql = "select pno, title, writer, view_count, create_date, update_date from tbl_post order by pno desc";
 		try(Connection conn = DBConn.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
 
@@ -137,33 +137,45 @@ public class PostDao {
 	public static void main(String[] args) {
 		PostDao pao = new PostDao();
 
-		Post post = Post.builder().title("test").writer("test").content("wwww").build();
-		
-		int rlt = pao.insert(post);
-		System.out.println(rlt);
-		
-		post = pao.selectOne((long) 12);
+//		Post post = Post.builder().title("test").writer("test").content("wwww").build();
+//		
+//		int rlt = pao.insert(post);
+//		System.out.println(rlt);
+//		
+		Post post = pao.selectOne((long) 15);
 		System.out.println(post);
-		
-		int p4 = pao.update(post);
-		System.out.println(p4);
-		
-		int p3 = pao.delete((long) post.getPno());
-		System.out.println(p3);
-		
-		
-		List<Post> arr = pao.selectList();
-		for (Post p : arr) {
-			System.out.println(p);
-		}
+//		
+//		int p4 = pao.update(post);
+//		System.out.println(p4);
+//		
+//		int p3 = pao.delete((long) post.getPno());
+//		System.out.println(p3);
+//		
+//		
+//		List<Post> arr = pao.selectList();
+//		for (Post p : arr) {
+//			System.out.println(p);
+//		}
 		
 //		pao.selectList().forEach(System.out::print);
 	}
 
-	public static int update() {
-		// TODO Auto-generated method stub
+	// view count 수정
+	public int increaseViewCount(Long pno) {
+		String sql = "update tbl_post set view_count = view_count + 1 where pno = ?";
+		
+		try(Connection conn = DBConn.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			int idx = 1;
+			pstmt.setLong(idx++,pno);
+			
+			return pstmt.executeUpdate();
+
+		} catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		}
+		
 		return 0;
-	}
+	}	
 
 
 

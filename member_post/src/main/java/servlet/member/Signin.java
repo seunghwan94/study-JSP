@@ -1,6 +1,7 @@
 package servlet.member;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -41,18 +42,6 @@ public class Signin extends HttpServlet{
 			HttpSession session =  req.getSession();
 			session.setAttribute("member", service.findBy(id));
 			
-//			// 쿠키 과제 - 쿠키에 아이디 기억 여부 처리
-//			Cookie cookie = new Cookie("id", id);
-//			Cookie rememberIdCookie = new Cookie("rememberId", rememberId);
-//			
-//			if(rememberId == null) {
-//				rememberIdCookie.setMaxAge(0);
-//			}
-//			
-//			resp.addCookie(cookie);
-//			resp.addCookie(rememberIdCookie);
-
-			
 			// 쿠키 쌤 코드
 			if(rememberId != null) {
 				Cookie cookie = new Cookie("remember-id",id);
@@ -71,10 +60,15 @@ public class Signin extends HttpServlet{
 				
 			}
 			
-			
+			// url 파라미터 여부에 따른 리디렉션 페이지 지정
+			String redirctURL = req.getContextPath()+"/index";
+			String url = req.getParameter("url");
+			if (url != null && !url.equals("")) {
+				redirctURL = URLDecoder.decode(url,"utf-8");
+			}
 			
 			// 로그인 성공
-			resp.sendRedirect(req.getContextPath()+"/index");
+			resp.sendRedirect(redirctURL);
 			
 		}else {
 			System.out.println("실패");
