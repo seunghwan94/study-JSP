@@ -9,6 +9,7 @@ import lombok.Data;
 @Builder
 public class Post {
 	private final Long pno;
+	private final int cno;
 	private final String title;
 	private final String writer;
 	private final String content;

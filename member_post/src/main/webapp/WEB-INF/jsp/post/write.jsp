@@ -20,7 +20,7 @@
 	  </div>
       <div class="my-3 col-md-9">
       
-	      <form method="post">
+	      <form method="post" action="write?page=1&${cri.qs}">
 	        <label for="title" class="form-label text-white mt-3">
 	          <i class="fa-solid fa-heading" style="color: #48587f;"></i>
 	          <b>Title</b>

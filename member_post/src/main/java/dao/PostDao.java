@@ -9,14 +9,15 @@ import java.util.List;
 
 import org.apache.catalina.tribes.util.Arrays;
 
+import dto.Criteria;
 import utils.DBConn;
 import vo.Post;
 
-public class PostDao {
+public class PostDao {	
 	
 	// 추가
 	public int insert(Post post) {
-		String sql = "insert into tbl_post (title,content,writer) values (?,?,?) ";
+		String sql = "insert into tbl_post (title,content,writer,cno) values (?,?,?,?) ";
 		
 		try(Connection conn = DBConn.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			int idx = 1;
@@ -24,6 +25,7 @@ public class PostDao {
 			pstmt.setString(idx++,post.getTitle());
 			pstmt.setString(idx++,post.getContent());
 			pstmt.setString(idx++,post.getWriter());
+			pstmt.setInt(idx++,post.getCno());
 			
 			return pstmt.executeUpdate();
 
@@ -66,19 +68,26 @@ public class PostDao {
 		
 		
 	// 목록 가져오기
-	public List<Post> selectList() {
+	public List<Post> selectList(Criteria cri) {
 		List<Post> posts = new ArrayList<>();
 		
-		String sql = "select pno, title, writer, view_count, create_date, update_date from tbl_post order by pno desc";
+		String sql = "select pno, cno, title, writer, view_count, create_date, update_date "
+					+ "from tbl_post "
+					+ "where cno = ? "
+					+ "order by pno desc "
+					+ "limit ? offset ? ";
+		
 		try(Connection conn = DBConn.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.setInt(1, cri.getCategory());
+			pstmt.setInt(2, cri.getAmount());
+			pstmt.setInt(3, cri.getOffset());
 
-
-			
 			ResultSet rs = pstmt.executeQuery();
 			while(rs.next()) {
 				int idx = 1;
 				Post post = Post.builder()
 						.pno(rs.getLong(idx++))
+						.cno(rs.getInt(idx++))
 						.title(rs.getString(idx++))
 						.writer(rs.getString(idx++))
 						.viewCount(rs.getLong(idx++))
@@ -87,6 +96,7 @@ public class PostDao {
 						.build();
 				posts.add(post);
 			}
+			rs.close();
 			return posts;
 			
 		} catch (ClassNotFoundException | SQLException e) {
@@ -94,6 +104,27 @@ public class PostDao {
 		}
 		
 		return posts;
+	}
+	
+	public int getCount(Criteria cri) {
+		
+		String sql = "select count(*) as cnt "
+					+ "from tbl_post "
+					+ "where cno = ? ";
+					
+		try(Connection conn = DBConn.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.setInt(1, cri.getCategory());
+
+			ResultSet rs = pstmt.executeQuery();
+			while(rs.next()) {
+				return rs.getInt(1);
+			}
+			rs.close();
+		} catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return 0;
 	}
 	
 	
@@ -136,14 +167,19 @@ public class PostDao {
 
 	public static void main(String[] args) {
 		PostDao pao = new PostDao();
-
+//		Criteria cri = new Criteria(2,10,2);
+//		
+//		pao.selectList(cri).forEach(System.out::println);
+//		System.out.println("갯수");
+//		System.out.println(pao.getCount(cri));
+		
 //		Post post = Post.builder().title("test").writer("test").content("wwww").build();
 //		
 //		int rlt = pao.insert(post);
 //		System.out.println(rlt);
 //		
-		Post post = pao.selectOne((long) 15);
-		System.out.println(post);
+//		Post post = pao.selectOne((long) 15);
+//		System.out.println(post);
 //		
 //		int p4 = pao.update(post);
 //		System.out.println(p4);

@@ -18,7 +18,7 @@
        
 	  <div class= "my-4 clearfix">
 		<h2 class="text-white float-start">게시판</h2>
-	  	<a href="write" class="btn btn-secondary float-end">글쓰기</a>
+	  	<a href="write?${pageDto.cri.qs2}" class="btn btn-secondary float-end">글쓰기</a>
 	  </div>
       <table class="table table-dark table-striped table-hover my-3 text-center" style="table-layout: fixed">
         <thead>
@@ -34,7 +34,7 @@
 	       	<c:forEach items="${posts}" var="p">
 	          <tr>
 	            <td>${p.pno}</td>
-	            <td class="text-truncate text-start"><a href="view?pno=${p.pno}" class="text-decoration-none text-white">${p.title}</a></td>
+	            <td class="text-truncate text-start"><a href="view?pno=${p.pno}&${pageDto.cri.qs2}" class="text-decoration-none text-white">${p.title}</a></td>
 	            <td>${p.writer}</td>
 	            <td>${p.createDate }</td>
 	            <td>${p.viewCount }</td>
@@ -45,11 +45,23 @@
 
       <div class="">
         <ul class="pagination justify-content-center my-5">
-          <li class="page-item"><a class="page-link" href="#"><</a></li>
-          <li class="page-item"><a class="page-link" href="#">1</a></li>
-          <li class="page-item active"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item"><a class="page-link" href="#">></a></li>
+          <c:if test="${pageDto.doublePrev}">
+	      	<li class="page-item"><a class="page-link" href="list?page=${pageDto.startPage-1}&${pageDto.cri.qs}"><i class="fa-solid fa-angles-left"></i></a></li>
+	      </c:if>
+	      <c:if test="${pageDto.prev}">
+       	  	<li class="page-item"><a class="page-link" href="list?page=${pageDto.cri.page-1}&${pageDto.cri.qs}"><i class="fa-solid fa-angle-left"></i></a></li>
+          </c:if>
+
+          <c:forEach begin="${pageDto.startPage}" end="${pageDto.endPage}" var="page">
+          	<li class="page-item ${page == pageDto.cri.page ? 'active' : ''}"><a class="page-link" href="list?page=${page}&amount=${pageDto.cri.amount}&category=${pageDto.cri.category}" >${page}</a></li>
+          </c:forEach>
+ 
+          <c:if test="${pageDto.next}">
+	      	<li class="page-item"><a class="page-link" href="list?page=${pageDto.cri.page+1}&${pageDto.cri.qs}"><i class="fa-solid fa-angle-right"></i></a></li>
+	      </c:if>
+	      <c:if test="${pageDto.doubleNext}">
+	      	<li class="page-item"><a class="page-link" href="list?page=${pageDto.endPage+1}&${pageDto.cri.qs}"><i class="fa-solid fa-angles-right"></i></a></li>
+	      </c:if>
         </ul>
       </div>
 
