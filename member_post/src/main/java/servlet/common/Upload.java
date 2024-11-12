@@ -17,6 +17,8 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
+import vo.Attach;
+
 @WebServlet("/upload")
 public class Upload extends HttpServlet{
 
@@ -49,6 +51,7 @@ public class Upload extends HttpServlet{
 					parentPath.mkdirs();
 				}
 				item.write(new File(parentPath, realName));
+//				Attach.add(Attach.)
 			};
 		} catch (Exception e ) {
 			e.printStackTrace();

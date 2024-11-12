@@ -66,8 +66,7 @@
       </div>
 
     </main>
-           
-    </main>
+
     <jsp:include page="../common/footer.jsp"/>
   </div>
 </body>

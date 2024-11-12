@@ -14,4 +14,8 @@ public class Commons {
 		pw.printf("location.href='%s';", url);
 		pw.println("</script>");
 	}
+	
+	public static void test() {
+		
+	}
 }
