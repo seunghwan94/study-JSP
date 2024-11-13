@@ -49,8 +49,24 @@
         <label for="writer" class="form-label text-white mt-3">
           <i class="fa-solid fa-user-pen"  style="color: #48587f;"></i>
           <b>Writer</b>
-        </label>
+        </label>        
         <input type="text" class="form-control" id="writer" placeholder="writer" name="writer" value="${post.writer}" disabled>
+
+
+        <label for="attach" class="form-label text-white mt-3">
+          <i class="fa-solid fa-paperclip" style="color: #48587f;"></i>
+          <b>Attach</b><br/>
+        </label>
+        <span class="text-white small attach-count-txt"></span>
+        <ul class="list-group attach-result">
+        	<c:if test="${empty post.attachs}">
+       			<li class="list-group-item">첨부파일 없음</li>
+        	</c:if>
+        	<c:forEach items="${post.attachs}" var="a">
+        		<li class="list-group-item"><a href="${cp}download?uuid=${a.uuid}&origin=${a.origin}&path=${a.path}">${a.origin}</a></li>
+        	</c:forEach>
+        </ul>
+
 
         <div class="text-center my-5">
         	<c:if test="${post.writer == member.id}">

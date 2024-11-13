@@ -6,17 +6,30 @@ import org.apache.ibatis.session.SqlSession;
 
 
 import dto.Criteria;
+import mapper.AttachMapper;
 import mapper.PostMapper;
 import utils.Mybatisinit;
 import vo.Post;
 
 public class PostServiceImpl implements PostService {
+//	public static void main(String[] args) {
+//		new PostServiceImpl().write(Post.builder().title("제목").content("내용").writer("test").cno(2).build());
+//		
+//	}
 	
 	@Override
 	public int write(Post post) {
 		try(SqlSession session =  Mybatisinit.getInstance().sqlSessionFactory().openSession(true)){
 			PostMapper mapper = session.getMapper(PostMapper.class);
-			return mapper.insert(post);
+			AttachMapper attachMapper = session.getMapper(AttachMapper.class);
+			
+			mapper.insert(post);
+			post.getAttachs().forEach(a->{
+				a.setPno(post.getPno());
+				attachMapper.insert(a);
+			});
+			
+			return 0;
 		}
 	}
 	@Override
@@ -30,14 +43,18 @@ public class PostServiceImpl implements PostService {
 	public int remove(Long pno) {
 		try(SqlSession session =  Mybatisinit.getInstance().sqlSessionFactory().openSession(true)){
 			PostMapper mapper = session.getMapper(PostMapper.class);
+			AttachMapper attachMapper = session.getMapper(AttachMapper.class);
+			attachMapper.delete(pno);
 			return mapper.delete(pno);
 		}
 	}
 	@Override
 	public Post findBy(Long pno) {
 		try(SqlSession session =  Mybatisinit.getInstance().sqlSessionFactory().openSession(true)){
+			
 			PostMapper mapper = session.getMapper(PostMapper.class);
-			return mapper.selectOne(pno);
+			Post post = mapper.selectOne(pno);
+			return post;
 		}
 	}
 	@Override
@@ -58,9 +75,13 @@ public class PostServiceImpl implements PostService {
 	public Post view(Long pno) {
 		try(SqlSession session =  Mybatisinit.getInstance().sqlSessionFactory().openSession(true)){
 			PostMapper mapper = session.getMapper(PostMapper.class);
+			AttachMapper attachMapper = session.getMapper(AttachMapper.class);
 			mapper.increaseViewCount(pno);
-			return findBy(pno);
+			Post post = mapper.selectOne(pno);
+			post.setAttachs(attachMapper.selectList(pno));
+			return post;
 		}
 	}
+	
 	
 }

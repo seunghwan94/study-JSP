@@ -39,15 +39,66 @@
 	        </label>
 	        <input type="text" class="form-control" id="writer" placeholder="writer" name="writer" value="${member.id}" readonly>
 	        
+	        <label for="attach" class="form-label text-white mt-3">
+	          <i class="fa-solid fa-paperclip" style="color: #48587f;"></i>
+	          <b>Attach</b><br/>
+	          <span type="button" class="btn btn-secondary my-2">파일첨부</span>
+	        </label>
+	        <input type="file" id="attach" name="file" class="d-none" multiple>
+	        <span class="text-white small attach-count-txt"></span>
+	        <ul class="list-group attach-result"></ul>
+	        
 	        <div class="text-center my-4">
 	          <a href="list" class="btn btn-outline-light">목록</a>
 	          <button class="btn btn-secondary">게시</button>
 	        </div>
+	        <div class="uploaded-input">
+	        
+	        </div>
+	        
 		</form>
 		
       </div>
     </main>
     <jsp:include page="../common/footer.jsp"/>
   </div>
+  <script>
+	$("#attach").change(function(){
+		const url = "${cp}" + "upload";
+		const formData = new FormData();
+		const files = this.files;
+
+		if(!files){
+			$(".attach-count-txt").text("");
+			$(".attach-result").empty();
+			return;
+		}
+		for(let i = 0 ; i < files.length; i++){
+			formData.append("file",files[i]);
+		}
+		
+		$.post({
+			url,
+			contentType:false,
+			processData:false,
+			data:formData
+		}).done(function(data){
+			$(".attach-count-txt").text(data.length+" 개의 파일");
+			let str = '';
+			let strHidden = '';
+			for(let i in data){
+				str += `<li class="list-group-item">\${data[i].origin}</li>`;
+				strHidden += `<input type="hidden" name="uuid" value="\${data[i].uuid}">`;
+				strHidden += `<input type="hidden" name="origin" value="\${data[i].origin}">`;
+				strHidden += `<input type="hidden" name="image" value="\${data[i].image}">`;
+				strHidden += `<input type="hidden" name="path" value="\${data[i].path}">`;
+			}
+			$(".attach-result").html(str);
+			$(".uploaded-input").html(strHidden);
+			console.log(data);
+		});
+	});
+</script>
+
 </body>
 </html>

@@ -11,7 +11,7 @@
    <ul class="navbar-nav container justify-content-start">
      <li class="nav-item"><a class="nav-link text-white mx-3" href="${cp}index">Home</a></li>
      <li class="nav-item"><a class="nav-link text-white mx-3" href="${cp}mypage">MyPage</a></li>
-     <li class="nav-item"><a class="nav-link text-white mx-3" href="${cp}post?category=1">공지사항</a></li>
+     <li class="nav-item"><a class="nav-link text-white mx-3" href="${cp}post/list?category=1">공지사항</a></li>
      <li class="nav-item dropdown">
        <a class="nav-link dropdown-toggle text-white mx-3" data-bs-toggle="dropdown" role="button">게시판</a>
        <div class="dropdown-menu">

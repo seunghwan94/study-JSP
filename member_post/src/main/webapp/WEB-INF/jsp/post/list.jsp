@@ -34,7 +34,12 @@
 	       	<c:forEach items="${posts}" var="p">
 	          <tr>
 	            <td>${p.pno}</td>
-	            <td class="text-truncate text-start"><a href="view?pno=${p.pno}&${pageDto.cri.qs2}" class="text-decoration-none text-white">${p.title}</a></td>
+	            <td class="text-truncate text-start">
+	            	<a href="view?pno=${p.pno}&${pageDto.cri.qs2}" class="text-decoration-none text-white">${p.title}</a>
+	            	<c:if test="${p.attachFlag}">
+	            		<i class="fa-solid fa-paperclip" style="color: #48587f;"></i>
+	            	</c:if>
+            	</td>
 	            <td>${p.writer}</td>
 	            <td>${p.createDate }</td>
 	            <td>${p.viewCount }</td>

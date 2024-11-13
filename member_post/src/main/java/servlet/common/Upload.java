@@ -3,6 +3,7 @@ package servlet.common;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,6 +17,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import vo.Attach;
 
@@ -30,14 +32,11 @@ public class Upload extends HttpServlet{
 		
 		ServletFileUpload upload = new ServletFileUpload(factory);
 //		
+		List<Attach> attachs = new ArrayList<>();
 		try {
 			List<FileItem> items = upload.parseRequest(req);
 			
 			for (FileItem item : items){
-				System.out.println(item);
-//				item.getFieldName();
-				System.out.println(item.getName());
-				System.out.println(item.getSize());
 				
 				String origin = item.getName();
 				int dotIdx = origin.lastIndexOf(".");
@@ -45,14 +44,20 @@ public class Upload extends HttpServlet{
 				if (dotIdx != -1) {
 					ext = origin.substring(dotIdx);
 				}
-				String realName = UUID.randomUUID() + ext;
+				String uuid = UUID.randomUUID().toString();
+				String realName = uuid + ext;
+				String path =getTodayStr();
 				File parentPath = new File("C:/jspUpload",getTodayStr());
 				if(!parentPath.exists()) {
 					parentPath.mkdirs();
 				}
 				item.write(new File(parentPath, realName));
-//				Attach.add(Attach.)
-			};
+				attachs.add(Attach.builder().uuid(realName).path(path).origin(origin).build());
+			}
+			
+			resp.setContentType("application/json; charset=utf-8");
+			resp.getWriter().print(new ObjectMapper().writeValueAsString(attachs));
+			
 		} catch (Exception e ) {
 			e.printStackTrace();
 		}
