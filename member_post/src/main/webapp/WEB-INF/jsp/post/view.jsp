@@ -6,6 +6,7 @@
 <head>
   <jsp:include page="../common/head.jsp"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js" integrity="sha512-3j3VU6WC5rPQB4Ld1jnLV7Kd5xr+cq9avvhwqzbH/taCRNURoeEpoPBK9pDyeukwSxwRPJ8fDgvYXd6SkaZ2TA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment-with-locales.min.js" integrity="sha512-4F1cxYdMiAW98oomSLaygEwmCnIP38pb4Kx70yQYqRwLVCs3DbRumfBq82T08g/4LJ/smbFGFpmeFlQgoDccgg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <style>
     .logo-img {width: 240px; height: 80px;}
     .hide {display: none;}
@@ -67,6 +68,16 @@
         	</c:forEach>
         </ul>
 
+		<div class="clearfix mb-3">
+	        <label class="form-label text-white mt-3 float-start">
+	          <i class="fa-regular fa-comment-dots "style="color: #48587f;"></i>
+	          <b>Replys</b>
+	        </label>
+	        <button type="button" id="btnWriteReply" class="btn mt-3  btn-secondary btn-sm float-end">write reply</button>
+        </div>
+        <ul class="list-group small replies"></ul>
+
+
 
         <div class="text-center my-5">
         	<c:if test="${post.writer == member.id}">
@@ -75,9 +86,98 @@
         	</c:if>
           	<a href="list?${cri.qs2}" class="btn btn-secondary">목록</a>
         </div>
-
       </div>
+      
+      
+      
+		<!-- The Modal -->
+		<div class="modal fade" id="replyModal">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		
+		      <!-- Modal Header -->
+		      <div class="modal-header">
+		        <h4 class="modal-title">Reply</h4>
+		        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+		      </div>
+		
+		      <!-- Modal body -->
+		      <div class="modal-body">
+		      	<label for="replyContent" class="mb-2">content</label>
+		      	<input type="text" class="form-control" id="replyContent">
+		      	<br>
+		      	<label for="replyWriter" class="mb-2">writer</label>
+		      	<input type="text" class="form-control" id="replyWriter" value="${member.id}">
+				
+		      </div>
+		
+		      <!-- Modal footer -->
+		      <div class="modal-footer">
+		      	<button type="button" class="btn btn-secondary" id="btnReplyWriteSubmit">write reply</button>
+		        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+		      </div>
+		
+		    </div>
+		  </div>
+		</div>
+
+
+
+
+
+
+
     </main>
+    <script src="${cp}js/reply.js"></script>
+
+    <script>
+    	moment.locale('ko');
+	    replyService.write({content:'zzzzz'});
+	    const pno = '${post.pno}';
+	    replyService.list(pno,function(data){
+	    	let str = "";
+        for(let i in data){
+          str += makeLi(data[i]);
+        };
+        $(".replies").append(str);
+        console.log(data);
+	    });
+
+      function makeLi(reply){
+        return `<li class="list-group-item" data-rno="\${reply.rno}">
+              <p class="text-black fw-bold mt-3 text-truncate">\${reply.content}</p>
+              <div class="clearfix text-secondary">
+                <span class="float-start">\${reply.writer}</span>
+                <span class="float-end small">\${moment(reply.createDate,"yyyy/MM/DD-HH:mm:ss").fromNow()}</span>
+                <a class="float-end small text-danger">삭제</a>
+              </div>
+          </li>`
+      }
+      
+      $("#btnWriteReply").click(function () {
+    	  $("#replyModal").modal("show");
+      })
+      
+      $(function () {
+		$("#btnReplyWriteSubmit").click(function() {
+			const writer = $("#replyWriter").val();
+			const content = $("#replyContent").val();
+			const reply={pno, writer, content};
+			console.log("sssss111");
+			replyService.write(reply, function(data){
+				console.log("sssss");
+				$("#replyModal").modal("hide");
+				$("#replyWriter").val("");
+				$("#replyContent").val("");
+				
+				location.reload();
+			});
+		});
+	  })
+	  
+	  
+    </script>
+
     <jsp:include page="../common/footer.jsp"/>
   </div>
 </body>

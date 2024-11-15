@@ -5,17 +5,17 @@
 <mapper namespace="mapper.ReplyMapper">
   <insert id="insert">
   	insert into tbl_reply (content, writer, pno) 
-  	values (#{id}, #{content}, #{writer}, #{pno})
+  	values (#{content}, #{writer}, #{pno})
   </insert>
   <update id="update">
   	update tbl_reply set content = #{content}, update_date = now() where rno = #{rno}
   </update>
   
   <delete id="delete">
-  	delele from tbl_reply where rno = #{rno}
+  	delete from tbl_reply where rno = #{rno}
   </delete>
   <delete id="deleteAll">
-  	delele from tbl_reply where pno = #{pno}
+  	delete from tbl_reply where pno = #{pno}
   </delete>
   
   <select id="selectOne" resultType="vo.Reply">

@@ -14,7 +14,6 @@ import vo.Reply;
 
 // 싱글턴
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-
 public class ReplyServiceImpl implements ReplyService{
 	@Getter
 	private static ReplyService instance = new ReplyServiceImpl();

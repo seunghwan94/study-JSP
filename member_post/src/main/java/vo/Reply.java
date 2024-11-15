@@ -1,6 +1,6 @@
 package vo;
 
-import java.sql.Date;
+import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,7 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
+//@NoArgsConstructor
 public class Reply {
 	private Long rno;
 	private String content;
@@ -17,5 +18,5 @@ public class Reply {
 	private boolean hidden;
 	private int likes;
 	private String writer;
-	private Long pno; 
+	private Long pno;
 }
