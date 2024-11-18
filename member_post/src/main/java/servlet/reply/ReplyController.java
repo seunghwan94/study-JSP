@@ -41,7 +41,6 @@ public class ReplyController extends HttpServlet{
 			ret = service.findBy(rno);
 		}
 		
-		System.out.println(ret);
 		resp.setContentType("application/json; charset=utf-8");
 		resp.getWriter().print(gson.toJson(ret));
 		
@@ -50,29 +49,19 @@ public class ReplyController extends HttpServlet{
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		char[] chs = new char[req.getContentLength()];
-		req.getReader().read(chs);
-		String str = new String(chs);
-		System.out.println(str);
-		
-		Reply reply = gson.fromJson(str, Reply.class);
-		System.out.println(reply);
-		
-		service.write(reply);
-		
-		
+//		char[] chs = new char[req.getContentLength()];
+//		req.getReader().read(chs);
+//		String str = new String(chs);
+//		System.out.println(str);
+//		Reply reply = gson.fromJson(str, Reply.class);
+//
+//		service.write(reply);
+		service.write(gson.fromJson(req.getReader(), Reply.class));
 	}
 
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		char[] chs = new char[req.getContentLength()];
-		req.getReader().read(chs);
-		String str = new String(chs);
-		System.out.println(str);
-		
-		Reply reply = gson.fromJson(str,Reply.class);
-		System.out.println(reply);
-		
+		Reply reply = gson.fromJson(req.getReader(),Reply.class);
 		service.modify(reply);
 		
 	}
