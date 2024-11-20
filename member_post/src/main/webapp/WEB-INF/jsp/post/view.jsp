@@ -68,15 +68,39 @@
         	</c:forEach>
         </ul>
 
-		    <div class="clearfix mb-3">
+		<div class="clearfix mb-3">
+	        <label class="form-label text-white mt-3 float-start">
+	          <i class="fa-regular fa-comment-dots "style="color: #48587f;"></i>
+	          <b>My Replys</b>
+	        </label>
+	        <button type="button" id="btnWriteReply" class="btn mt-3  btn-secondary btn-sm float-end">write reply</button>
+        </div>
+
+		<ul class="list-group small my-replies my-2" >
+<!-- 			<li class="list-group-item " data-rno="6" style="background-color: #e1d896">
+              <p class="fw-bold mt-3 text-truncate">test</p>
+              <div class="clearfix text-secondary">
+                <span class="float-start ">여기</span>
+                <span class="float-end small">Invalid date</span>
+                <a class="float-end me-1 small text-danger btn-reply-remove" href="#">삭제</a>
+              </div>
+          </li> -->
+		</ul>
+		
+		
+	    <div class="clearfix mb-3">
 	        <label class="form-label text-white mt-3 float-start">
 	          <i class="fa-regular fa-comment-dots "style="color: #48587f;"></i>
 	          <b>Replys</b>
 	        </label>
 	        <button type="button" id="btnWriteReply" class="btn mt-3  btn-secondary btn-sm float-end">write reply</button>
         </div>
-        <ul class="list-group small replies"></ul>
 
+
+        <ul class="list-group small replies"></ul>
+		<div class="d-grid my-3">
+      	  <button class="btn btn-secondary btn-block btn-more-reply">댓글 더 보기</button>
+		</div>
 
 
         <div class="text-center my-5">
@@ -140,13 +164,36 @@
 
       list();
       
-      function list(){
-        replyService.list(pno,function(data){
+      // 목록 조회
+      function list(cri, myOnly){
+        replyService.list(pno, cri, function(data){
+          if(!data.list.length){
+        	  $(".btn-more-reply")
+        	  	.prop("disabled", true)
+        	  	.text("댓글이 없습니다.")
+        	  	.removeClass("btn-primary")
+        	  	.addClass("btn-secondary");
+        	  return;
+          }
+          
+          let myStr = "";
+          console.log(data);
+          for(let i in data.myList){
+              myStr += makeLi(data.myList[i]);
+            };
+          $(".my-replies").append(myStr);
+        	
+          if(myOnly) return;
+          
           let str = "";
-          for(let i in data){
-            str += makeLi(data[i]);
+          for(let i in data.list){
+            str += makeLi(data.list[i]);
           };
-          $(".replies").html(str);
+          $(".replies").append(str);
+
+          
+          
+          
         });
       }
 
@@ -161,7 +208,7 @@
           </li>`
       }
       // li 클릭시 이벤트
-      $(".replies").on("click", "li", function(){
+      $(".replies, .my-replies").on("click", "li", function(){
     	 const rno = $(this).data("rno"); 
     	 replyService.view(rno, function(data){
 			$("#replyModal").find(".modal-footer div button").hide()
@@ -175,14 +222,18 @@
       
       
    	  // li .btn-reply-rmove 클릭시 이벤트
-      $(".replies").on("click", "li .btn-reply-remove", function(){
+      $(".replies, .my-replies").on("click", "li .btn-reply-remove", function(){
     	  // event.preventDefault();
     	  // event.stopPropation();
           if(!confirm("삭제 하시겠습니까?")) return false;
-          const rno = $(this).closest("li").data("rno");
+          
+          const $li = $(this).closest("li");
+          const rno = $li.data("rno");
+          
     	  replyService.remove(rno, function(data){
              alert("삭제 되었습니다.");
-             list();
+      		 $li.remove();
+      		 list(undefined, true);
            });
     	  return false;
     	  
@@ -195,11 +246,16 @@
 			.filter(":eq(0)").show();
     	  $("#replyModal").modal("show");
 
-          $("#replyContent").val("");
+        $("#replyContent").val("");
     	  $("#replyWriter").val("${member.id}");
       })
       
       
+      // 댓글 더보기 버튼 클릭시
+      $(".btn-more-reply").click(function () {
+        const lastRno = $(".replies li:last").data("rno");
+        list({lastRno});
+      })
       
       $(function () {
     	 
@@ -211,29 +267,30 @@
           
           replyService.write(reply, function(data){
             $("#replyModal").modal("hide");
-            list();
+            list(undefined, true);
           });
         });
     	// 댓글 수정(반영) 버튼 클릭시
         $("#btnReplyModifySubmit").click(function() {
           const rno = $("#replyModal").data("rno");
-          
        	  const content = $("#replyContent").val();
           const reply={rno, content};
           
           replyService.modify(reply, function(data){
             $("#replyModal").modal("hide");
-            list();
+            $(`.replies li[data-rno="\${rno}"] p`).text(content);
+            list(undefined, true);
           });
         });
     	
     	// 댓글 삭제(반영) 버튼 클릭시
         $("#btnReplyRemoveSubmit").click(function() {
           const rno = $("#replyModal").data("rno");
-          
+          const $li = $(`.replies li[data-rno="\${rno}"]`);
           replyService.remove(rno, function(data){
             $("#replyModal").modal("hide");
-            list();
+            $li.remove();
+            list(undefined, true);
           });
         });
     	

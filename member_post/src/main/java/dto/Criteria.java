@@ -80,7 +80,9 @@ public class Criteria {
 		return String.join("&", strs);
 	}
 	
-	
+	public String[] getTypeArr() {
+		return type.split("");
+	}
 	
 	
 //	public static void main(String[] args) {
